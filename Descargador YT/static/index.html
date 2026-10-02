@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicDownloader</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fab fa-youtube"></i>
+                <span>MusicDown</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active" onclick="switchView('home', this)"><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
+                <li onclick="switchView('search', this)"><a href="#"><i class="fas fa-search"></i> Buscar</a></li>
+                <li onclick="switchView('library', this)"><a href="#"><i class="fas fa-list"></i> Tu Biblioteca</a></li>
+            </ul>
+            <div class="divider"></div>
+            <ul class="nav-links" id="playlist-nav">
+                <li onclick="createPlaylist()"><a href="#"><i class="fas fa-plus-square"></i> Crear playlist</a></li>
+                <li onclick="switchView('liked', this)"><a href="#"><i class="fas fa-heart"></i> Tus me gusta</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="navigation-arrows">
+                    <button><i class="fas fa-chevron-left"></i></button>
+                    <button><i class="fas fa-chevron-right"></i></button>
+                </div>
+                
+                <div class="search-box" id="searchBoxContainer" style="opacity: 0; pointer-events: none;">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="¿Qué quieres escuchar o descargar?" />
+                </div>
+
+                <div class="user-profile">
+                    <button class="btn-explore">Explorar Premium</button>
+                    <i class="fas fa-user-circle user-icon"></i>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- VISTA: HOME -->
+                <div id="view-home" class="view">
+                    <h2 class="section-title">Buenas tardes</h2>
+                    <div class="empty-state">
+                        <i class="fas fa-music"></i>
+                        <h3>Bienvenido a MusicDown</h3>
+                        <p>Ve a "Buscar" para encontrar tus canciones favoritas.</p>
+                        <button class="primary-btn" onclick="switchView('search', document.querySelectorAll('.nav-links li')[1])">Ir a Buscar</button>
+                    </div>
+                </div>
+
+                <!-- VISTA: SEARCH -->
+                <div id="view-search" class="view hidden">
+                    <h2 class="section-title">Resultados de la búsqueda</h2>
+                    <div id="loading" class="hidden">
+                        <div class="spinner"></div>
+                        <p>Buscando en YouTube Music...</p>
+                    </div>
+                    <div id="results" class="results-grid">
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h3>Encuentra la música que amas</h3>
+                            <p>Escribe arriba el nombre de la canción o artista.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA: LIKED / LIBRARY -->
+                <div id="view-library" class="view hidden">
+                    <h2 class="section-title" id="library-title">Tu Biblioteca</h2>
+                    <div id="library-results" class="results-grid">
+                        <!-- Las canciones guardadas se cargarán aquí -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- REPRODUCTOR INFERIOR (Estilo Spotify) -->
+    <div class="player-bar">
+        <div class="player-left">
+            <img id="player-thumb" src="" class="hidden" alt="Portada">
+            <div class="player-info hidden" id="player-info-container">
+                <h4 id="player-title"></h4>
+                <p id="player-artist"></p>
+            </div>
+            <button id="player-like-btn" class="hidden" title="Guardar en Tu Biblioteca"><i class="far fa-heart"></i></button>
+        </div>
+
+        <div class="player-center">
+            <div class="player-controls">
+                <button class="control-btn"><i class="fas fa-random"></i></button>
+                <button class="control-btn"><i class="fas fa-step-backward"></i></button>
+                <button id="player-play-btn" class="play-btn" onclick="togglePlay()"><i class="fas fa-play-circle"></i></button>
+                <button class="control-btn"><i class="fas fa-step-forward"></i></button>
+                <button class="control-btn"><i class="fas fa-redo-alt"></i></button>
+            </div>
+            <div class="player-progress">
+                <span id="player-time-current">0:00</span>
+                <input type="range" id="player-timeline" value="0" min="0" max="100">
+                <span id="player-time-total">0:00</span>
+            </div>
+        </div>
+
+        <div class="player-right">
+            <button id="player-download-btn" class="hidden" title="Descargar MP3"><i class="fas fa-download"></i></button>
+            <i class="fas fa-volume-up"></i>
+            <input type="range" id="player-volume" value="100" min="0" max="100" onchange="changeVolume(this.value)">
+        </div>
+    </div>
+
+    <!-- Elemento Audio Oculto -->
+    <audio id="audio-player"></audio>
+
+    <!-- Toast Notification for Download -->
+    <div id="download-toast" class="toast hidden">
+        <div class="toast-content">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <div class="toast-text">
+                <h4>Descargando archivo</h4>
+                <p id="download-title"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
